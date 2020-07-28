@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:id="@+id/fragment_container_home"
+    android:layout_height="match_parent"
+    tools:context=".ui.home.HomeFragment">
+
+    <fragment
+        android:id="@+id/map_view"
+        android:name="com.mapbox.mapboxsdk.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="34dp"
+        tools:layout_editor_absoluteY="0dp" />
+
+    <TextView
+        android:id="@+id/auto_suggest"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Search"
+        android:drawableLeft="@drawable/ic_baseline_search_24"
+        android:drawableTint="#000"
+        android:drawablePadding="6dp"
+        android:background="@android:color/white"
+        android:gravity="center_vertical"
+        android:textSize="18dp"
+        android:padding="12dp"
+        android:minHeight="40dp"
+        android:layout_margin="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+
+    <io.codetail.widget.RevealFrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/bottom_nav_view">
+        <include layout="@layout/circular_reveal_animation"></include>
+        ></io.codetail.widget.RevealFrameLayout>
+
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:id="@+id/fab"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="70dp"
+        android:tint="@color/white"
+        android:padding="18dp"
+        android:focusable="true"
+        android:clickable="true"
+        app:srcCompat="@drawable/ic_baseline_gps_fixed_24" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_nav_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/windowBackground"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:menu="@menu/bottom_nav_home" />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

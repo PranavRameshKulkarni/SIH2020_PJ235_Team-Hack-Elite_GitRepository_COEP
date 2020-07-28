@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_home">
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="com.example.telecommapping.ui.home.HomeFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/nav_speed_test"
+        android:name="com.example.telecommapping.ui.SpeedTest.SpeedTestFragment"
+        android:label="fragment_speed_test"
+        tools:layout="@layout/fragment_speed_test" />
+    <fragment
+        android:id="@+id/nav_subscriber_details"
+        android:name="com.example.telecommapping.ui.Subscribers.SubscribersFragment"
+        android:label="fragment_subscribers"
+        tools:layout="@layout/fragment_subscribers" />
+    <fragment
+        android:id="@+id/nav_profile"
+        android:name="com.example.telecommapping.ui.Profile.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" />
+</navigation>
