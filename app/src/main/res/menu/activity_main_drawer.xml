@@ -6,24 +6,28 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/ic_baseline_home_24"
             android:title="@string/menu_home" />
-
+        <item
+            android:id="@+id/nav_profile"
+            android:icon="@drawable/ic_baseline_person_24"
+            android:title="Profile" />
         <item
             android:id="@+id/nav_speed_test"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/ic_baseline_speed_24"
             android:title="Speed Test" />
         <item
             android:id="@+id/nav_subscriber_details"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/ic_baseline_pie_chart_24"
             android:title="Subscribers" />
         <item
-            android:id="@+id/nav_profile"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Profile" />
+            android:id="@+id/nav_addplaces"
+            android:icon="@drawable/ic_baseline_place_24"
+            android:title="Add Places" />
+
         <item
             android:id="@+id/nav_logout"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/ic_baseline_power_settings_new_24"
             android:title="Logout" />
     </group>
 </menu>

@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import com.example.telecommapping.R;
 
@@ -61,6 +63,17 @@ public class SpeedTestFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_speed_test, container, false);
+//        return inflater.inflate(R.layout.fragment_speed_test, container, false);
+        View root = inflater.inflate(R.layout.fragment_speed_test, container, false);
+        WebView webView = (WebView)root.findViewById(R.id.webview);
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.setWebViewClient(new WebViewClient());
+        webView.loadUrl("https://netspeed.one/");
+//https://fast.com/
+
+
+        return root;
+
+
     }
 }
