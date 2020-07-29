@@ -14,16 +14,21 @@
     <fragment
         android:id="@+id/nav_speed_test"
         android:name="com.example.telecommapping.ui.SpeedTest.SpeedTestFragment"
-        android:label="fragment_speed_test"
+        android:label="Speed Test"
         tools:layout="@layout/fragment_speed_test" />
     <fragment
         android:id="@+id/nav_subscriber_details"
         android:name="com.example.telecommapping.ui.Subscribers.SubscribersFragment"
-        android:label="fragment_subscribers"
+        android:label="Subscribers"
         tools:layout="@layout/fragment_subscribers" />
     <fragment
         android:id="@+id/nav_profile"
         android:name="com.example.telecommapping.ui.Profile.ProfileFragment"
-        android:label="fragment_profile"
+        android:label="Profile"
         tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/nav_addplaces"
+        android:name="com.example.telecommapping.ui.Addplaces.AddPlacesFragment"
+        android:label="Add Places"
+        tools:layout="@layout/fragment_addplaces" />
 </navigation>
