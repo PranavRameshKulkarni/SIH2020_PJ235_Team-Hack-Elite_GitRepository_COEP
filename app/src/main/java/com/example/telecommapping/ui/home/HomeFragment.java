@@ -2,12 +2,14 @@ package com.example.telecommapping.ui.home;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -40,6 +42,7 @@ import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.mapbox.mapboxsdk.geometry.LatLngBounds;
 import com.mapbox.mapboxsdk.location.LocationComponent;
 import com.mapbox.mapboxsdk.location.LocationComponentOptions;
 import com.mapbox.mapboxsdk.location.modes.CameraMode;
@@ -60,6 +63,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.mapbox.mapboxsdk.MapmyIndia.getApplicationContext;
+
 public class HomeFragment extends Fragment implements OnMapReadyCallback, PermissionsListener, LocationEngineListener,View.OnClickListener{
     private MapboxMap mapmyIndiaMap;
     private TextView autoSuggestText;;
@@ -72,6 +77,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Permis
     private LinearLayout mCircularReveal;
     private ImageButton  wifi_btn, towers_button, telephone_exchange_btn, csc_button;
     SupportMapFragment mapFragment = null;
+    private List<LatLng> latLngList = new ArrayList<>();
 
 
     private boolean hidden = true;
@@ -224,9 +230,11 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Permis
                 LatLng latLng = new LatLng(list.get(i).lat, list.get(i).lng);
 
                 Marker marker = mapmyIndiaMap.addMarker(new MarkerOptions().position(latLng).title(list.get(i).radio).snippet("tower"));
-//                marker.setIcon(new Icon());
+
+
             }
             mapmyIndiaMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), 12));
+
         }
     }
 
@@ -271,6 +279,29 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Permis
             permissionsManager = new PermissionsManager(this);
             permissionsManager.requestLocationPermissions(getActivity());
         }
+
+
+        mapmyIndiaMap.setOnMarkerClickListener(new MapboxMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(@NonNull Marker marker) {
+
+              Toast.makeText(getActivity(), marker.getPosition().toString(), Toast.LENGTH_LONG).show();
+
+                return false;
+            }
+        });
+
+
+
+
+
+
+
+
+
+
+
+
     }
 
     @Override
