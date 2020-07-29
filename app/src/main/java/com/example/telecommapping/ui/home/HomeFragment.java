@@ -26,9 +26,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 
+import com.example.telecommapping.LocationModel;
 import com.example.telecommapping.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -37,6 +36,7 @@ import com.mapbox.android.core.location.LocationEngineListener;
 import com.mapbox.android.core.permissions.PermissionsListener;
 import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.geojson.Point;
+import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -53,6 +53,11 @@ import com.mapmyindia.sdk.plugins.places.autocomplete.ui.PlaceSelectionListener;
 import com.mmi.services.api.autosuggest.AutoSuggestCriteria;
 import com.mmi.services.api.autosuggest.model.ELocation;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 
 public class HomeFragment extends Fragment implements OnMapReadyCallback, PermissionsListener, LocationEngineListener,View.OnClickListener{
@@ -178,7 +183,51 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Permis
     @Override
     public void onClick(View v) {
         hideRevealView();
+        switch (v.getId()){
+            case R.id.towers_button:
+                getTowers();
+        }
 
+    }
+
+    public void getTowers(){
+        InputStream inputStream = getClass().getResourceAsStream("/assets/fianldemorange.csv");
+        List<LocationModel> resultList = new ArrayList();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+        try {
+            String csvLine;
+            int i =0 ;
+            while ((csvLine = reader.readLine()) != null) {
+                if(i>0) {
+                    String[] row = csvLine.split(",");
+                    Log.i("LATLNG", "getTowers: "+csvLine);
+                    resultList.add(new LocationModel(Double.parseDouble(row[3]),Double.parseDouble(row[2]), row[0]));
+                }
+                i++;
+            }
+        } catch (IOException ex) {
+            throw new RuntimeException("Error in reading CSV file: " + ex);
+        } finally {
+            try {
+                inputStream.close();
+            } catch (IOException e) {
+                throw new RuntimeException("Error while closing input stream: " + e);
+            }
+        }
+        addMarkersForTowers(resultList);
+    }
+
+    public void addMarkersForTowers(List<LocationModel> list){
+        if (mapmyIndiaMap != null) {
+            mapmyIndiaMap.clear();
+            for(int i=0; i<list.size();i++){
+                LatLng latLng = new LatLng(list.get(i).lat, list.get(i).lng);
+
+                Marker marker = mapmyIndiaMap.addMarker(new MarkerOptions().position(latLng).title(list.get(i).radio).snippet("tower"));
+//                marker.setIcon(new Icon());
+            }
+            mapmyIndiaMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), 12));
+        }
     }
 
     @Override
