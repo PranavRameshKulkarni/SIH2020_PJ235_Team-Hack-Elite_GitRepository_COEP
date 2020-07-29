@@ -2,6 +2,7 @@ package com.example.telecommapping.ui.home;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,6 +57,9 @@ import com.mapmyindia.sdk.plugins.places.autocomplete.ui.PlaceAutocompleteFragme
 import com.mapmyindia.sdk.plugins.places.autocomplete.ui.PlaceSelectionListener;
 import com.mmi.services.api.autosuggest.AutoSuggestCriteria;
 import com.mmi.services.api.autosuggest.model.ELocation;
+import com.mmi.services.api.nearby.MapmyIndiaNearby;
+import com.mmi.services.api.nearby.model.NearbyAtlasResponse;
+import com.mmi.services.api.nearby.model.NearbyAtlasResult;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -62,6 +67,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static com.mapbox.mapboxsdk.MapmyIndia.getApplicationContext;
 
@@ -78,6 +87,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Permis
     private ImageButton  wifi_btn, towers_button, telephone_exchange_btn, csc_button;
     SupportMapFragment mapFragment = null;
     private List<LatLng> latLngList = new ArrayList<>();
+
 
 
     private boolean hidden = true;
@@ -192,6 +202,17 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Permis
         switch (v.getId()){
             case R.id.towers_button:
                 getTowers();
+                break;
+            case R.id.telephone_exchange_button:
+                get_places("telephone exchange");
+                break;
+            case R.id.csc_button:
+                get_places("telecommunication services");
+                break;
+            case R.id.wifi_button:
+                get_places("WiFi");
+                break;
+
         }
 
     }
@@ -237,6 +258,77 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Permis
 
         }
     }
+
+
+    public void get_places(String keyword)    {
+        try {
+            String keywords = keyword;
+            String lat = "18.5204"; //+currentLocation.getLatitude();
+            String lng = "73.8567"; //+currentLocation.getLongitude();
+
+            if (lat.length() > 0 && lng.length() > 0) {
+                if ((keywords != null && keywords.length() > 0)) {
+                    MapmyIndiaNearby.builder()
+                            .setLocation(Double.parseDouble(lat), Double.parseDouble(lng))
+                            .keyword(keywords)
+                            .build()
+                            .enqueueCall(new Callback<NearbyAtlasResponse>() {
+                                @Override
+                                public void onResponse(Call<NearbyAtlasResponse> call, Response<NearbyAtlasResponse> response) {
+
+                                    if (response.code() == 200) {
+                                        if (response.body() != null) {
+                                            ArrayList<NearbyAtlasResult> nearByList = response.body().getSuggestedLocations();
+                                            if (nearByList.size() > 0) {
+                                                Toast.makeText(getContext(), ""+nearByList.size(), Toast.LENGTH_LONG).show();
+                                                addOverLays(nearByList);
+                                            }
+                                        } else {
+                                            Toast.makeText(getContext(), "Not able to get value, Try again.", Toast.LENGTH_SHORT).show();
+                                        }
+                                    } else {
+                                        Toast.makeText(getContext(), response.message(), Toast.LENGTH_LONG).show();
+                                    }
+                                }
+
+
+                                @Override
+                                public void onFailure(Call<NearbyAtlasResponse> call, Throwable t) {
+                                    Log.i("Error", "Error while fetching", t);
+                                }
+                            });
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    void addOverLays(ArrayList<NearbyAtlasResult> places) {
+        ArrayList<LocationModel> points = new ArrayList<>();
+
+        for (NearbyAtlasResult place : places) {
+            points.add(new LocationModel(place.getLatitude(), place.getLongitude(), place.getPlaceName()));
+        }
+        addOverLay(points, false);
+    }
+
+
+    void addOverLay(List<LocationModel> list, boolean showInfo) {
+        if (mapmyIndiaMap != null) {
+            mapmyIndiaMap.clear();
+            for(int i=0; i<list.size();i++){
+                LatLng latLng = new LatLng(list.get(i).lat, list.get(i).lng);
+
+                Marker marker = mapmyIndiaMap.addMarker(new MarkerOptions().position(latLng).title(list.get(i).radio).snippet("tower"));
+
+
+            }
+            mapmyIndiaMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), 12));
+
+        }
+    }
+
 
     @Override
     public void onConnected() {
@@ -290,17 +382,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Permis
                 return false;
             }
         });
-
-
-
-
-
-
-
-
-
-
-
 
     }
 
