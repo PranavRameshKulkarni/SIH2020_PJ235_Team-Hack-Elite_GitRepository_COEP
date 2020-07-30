@@ -68,9 +68,9 @@ public class SpeedTestFragment extends Fragment {
         WebView webView = (WebView)root.findViewById(R.id.webview);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setWebViewClient(new WebViewClient());
-        webView.loadUrl("https://netspeed.one/");
+        webView.loadUrl("https://www.bing.com/widget/t/speedtest");
 //https://fast.com/
-
+//https://netspeed.one/
 
         return root;
 
