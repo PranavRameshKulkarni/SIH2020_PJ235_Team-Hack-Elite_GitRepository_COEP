@@ -11,9 +11,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
+import com.example.telecommapping.NavigationActivity;
 import com.example.telecommapping.R;
+import com.example.telecommapping.ui.ImagePickerActivity;
 import com.example.telecommapping.ui.PickerActivity;
+import com.example.telecommapping.ui.home.HomeFragment;
 
 import static com.mapbox.mapboxsdk.MapmyIndia.getApplicationContext;
 
@@ -28,7 +32,8 @@ public class AddPlacesFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    Button button;
+    Button pickPlacebutton,pickPhotobutton;
+
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -72,17 +77,26 @@ public class AddPlacesFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root= inflater.inflate(R.layout.fragment_addplaces, container, false);
-        button=root.findViewById(R.id.button_send);
-        button.setOnClickListener(new View.OnClickListener() {
+        pickPlacebutton=root.findViewById(R.id.button_send);
+        pickPhotobutton = root.findViewById(R.id.button_send1);
+        pickPlacebutton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Do something in response to button click
-                Intent i = new Intent(getApplicationContext(), PickerActivity.class);
-                startActivity(i);
-
-
-
+                Intent intent = new Intent(getApplicationContext(), PickerActivity.class);
+                startActivity(intent);
             }
         });
+        pickPhotobutton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // Do something in response to button click
+                Intent intent1 = new Intent(getActivity(), ImagePickerActivity.class);
+                startActivity(intent1);
+            }
+        });
+
+
+
+
         return root;
     }
 }

@@ -6,17 +6,21 @@
     tools:context=".ui.Addplaces.AddPlacesFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+
     <Button
         android:id="@+id/button_send"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add Places"/>
-        //android:onClick="sendMessage" />
-       // tools:ignore="OnClick" />
-       // android:background="@drawable/button_custom"  />
+        android:text="Add Places via Map    "
+        android:layout_marginBottom="32dp"
+        android:layout_gravity="center"/>
+    <Button
+        android:id="@+id/button_send1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Places via Gallery"
+        android:layout_marginTop="32dp"
+        android:layout_gravity="center"/>
+
 
 </FrameLayout>

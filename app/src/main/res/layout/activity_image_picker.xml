@@ -8,7 +8,7 @@
     tools:context="com.example.telecommapping.ui.PickerActivity">
 
     <TextView
-        android:id="@+id/selected_place"
+        android:id="@+id/select_photo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -22,18 +22,30 @@
 
 
     <Button
-        android:id="@+id/place_picker"
+        android:id="@+id/photo_picker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/selected_place"
+        android:layout_below="@+id/select_photo"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="32dp"
         android:gravity="center"
-        android:text="Pick Place" />
+        android:text="Pick Image" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="225dp"
+        android:layout_height="200dp"
+        android:layout_below="@+id/photo_picker"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dp"
+        android:background="@color/white"
+        android:gravity="center"
+        />
+
 
 
     <Button
-        android:id="@+id/send_suggestion"
+        android:id="@+id/send_suggestion1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"

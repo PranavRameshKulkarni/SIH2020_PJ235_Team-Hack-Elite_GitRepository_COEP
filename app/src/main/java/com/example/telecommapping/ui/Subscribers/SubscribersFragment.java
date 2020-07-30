@@ -31,8 +31,8 @@ public class SubscribersFragment extends Fragment  {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     AnyChartView anyChartView;
-    String[] company= {"Jio","Idea","Airtel","BSNL","MTNL","Vodafone Limited"};
-    int[] values={32,45,12,24,32,67,23};
+    String[] company= {"Jio","Idea","Airtel","BSNL","MTNL"};
+    double[] values={370.0,332.6,327.29,118,3.37};
 
     // TODO: Rename and change types of parameters
     private String mParam1;
