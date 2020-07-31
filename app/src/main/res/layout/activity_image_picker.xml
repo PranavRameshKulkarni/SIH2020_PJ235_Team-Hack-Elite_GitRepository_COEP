@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="15dp"
         android:ellipsize="end"
         android:gravity="center"
         android:maxLines="1"
@@ -27,9 +27,12 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/select_photo"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/colorPrimary"
         android:gravity="center"
-        android:text="Pick Image" />
+        android:padding="8dp"
+        android:text="Pick Image"
+        android:textColor="@color/white" />
 
     <ImageView
         android:id="@+id/imageView"
@@ -37,11 +40,45 @@
         android:layout_height="200dp"
         android:layout_below="@+id/photo_picker"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="20dp"
         android:background="@color/white"
-        android:gravity="center"
-        />
+        android:gravity="center" />
 
+    <RadioGroup
+        android:id="@+id/radiogrp2"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/place_picker"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="150dp"
+        android:layout_marginLeft="250dp">
+
+        <RadioButton
+            android:id="@+id/tower2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tower" />
+
+        <RadioButton
+            android:id="@+id/Wifi2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="WiFi" />
+
+        <RadioButton
+            android:id="@+id/telex2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Telephone Exchange" />
+
+        <RadioButton
+            android:id="@+id/csc2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Customer Service" />
+    </RadioGroup>
 
 
     <Button
