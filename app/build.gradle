@@ -78,4 +78,7 @@ dependencies {
     implementation 'it.sephiroth.android.library.easing:android-easing:+'
     implementation 'junit:junit:4.12'
 
+    implementation 'com.loopj.android:android-async-http:1.4.11'
+
+
 }
