@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,9 +18,13 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -74,7 +79,7 @@ import retrofit2.Response;
 
 import static com.mapbox.mapboxsdk.MapmyIndia.getApplicationContext;
 
-public class HomeFragment extends Fragment implements OnMapReadyCallback, PermissionsListener, LocationEngineListener,View.OnClickListener{
+public class HomeFragment extends Fragment implements OnMapReadyCallback, PermissionsListener, LocationEngineListener,View.OnClickListener,   AdapterView.OnItemSelectedListener{
     private MapboxMap mapmyIndiaMap;
     private TextView autoSuggestText;;
     private Handler handler;
@@ -87,6 +92,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Permis
     private ImageButton  wifi_btn, towers_button, telephone_exchange_btn, csc_button;
     SupportMapFragment mapFragment = null;
     private List<LatLng> latLngList = new ArrayList<>();
+    String[] range = { "5 km", "10 km", "15 km"};
 
 
 
@@ -194,7 +200,45 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Permis
                 return true;
             }
         });
+
+        //spinner
+        Spinner spin = getActivity().findViewById(R.id.spinner);
+        spin.setOnItemSelectedListener((AdapterView.OnItemSelectedListener) this);
+
+        //Creating the ArrayAdapter instance having the country list
+        ArrayAdapter aa = new ArrayAdapter(this.getActivity(),android.R.layout.simple_spinner_item, range);
+        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //Setting the ArrayAdapter data on the Spinner
+        spin.setAdapter(aa);
+        //spinner ends
+
+
     }
+    @Override
+    public void onItemSelected(AdapterView<?> arg0, View arg1, int position, long id) {
+        Toast.makeText(getApplicationContext(),range[position] , Toast.LENGTH_LONG).show();
+    }
+    @Override
+    public void onNothingSelected(AdapterView<?> arg0) {
+        // TODO Auto-generated method stub
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     @Override
     public void onClick(View v) {
@@ -202,6 +246,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Permis
         switch (v.getId()){
             case R.id.towers_button:
                 getTowers();
+
                 break;
             case R.id.telephone_exchange_button:
                 get_places("telephone exchange");
@@ -242,6 +287,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Permis
             }
         }
         addMarkersForTowers(resultList);
+
     }
 
     public void addMarkersForTowers(List<LocationModel> list){
@@ -258,6 +304,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Permis
 
         }
     }
+
 
 
     public void get_places(String keyword)    {
