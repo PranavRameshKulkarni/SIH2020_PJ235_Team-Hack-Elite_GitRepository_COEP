@@ -5,9 +5,11 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.anychart.AnyChart;
 import com.anychart.AnyChartView;
@@ -15,9 +17,18 @@ import com.anychart.chart.common.dataentry.DataEntry;
 import com.anychart.chart.common.dataentry.ValueDataEntry;
 import com.anychart.charts.Pie;
 import com.example.telecommapping.R;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+
+import cz.msebera.android.httpclient.Header;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -31,8 +42,8 @@ public class SubscribersFragment extends Fragment  {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     AnyChartView anyChartView;
-    String[] company= {"Jio","Idea","Airtel","BSNL","MTNL"};
-    double[] values={370.0,332.6,327.29,118,3.37};
+    String[] company= {"Jio","Vodafone Idea Limited","Airtel","BSNL","MTNL"};
+    int[] values={32,45,12,24,32,67,23};
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -77,13 +88,15 @@ public class SubscribersFragment extends Fragment  {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_subscribers, container, false);
         anyChartView= root.findViewById(R.id.any_chart_view);
-        setupPiechart();
+//        setupPiechart();
+        getData();
         return  root;
     }
    public void setupPiechart()
    {
 
        Pie pie= AnyChart.pie();
+//       getData();
        List<DataEntry> dataEntries=new ArrayList<>();
        for(int i=0;i<company.length;i++)
        {
@@ -93,5 +106,35 @@ public class SubscribersFragment extends Fragment  {
        anyChartView.setChart(pie);
    }
 
+   public void getData(){
+       Pie pie= AnyChart.pie();
+       AsyncHttpClient client = new AsyncHttpClient();
+       client.addHeader("Authorization","Token e37a46932ad72db1a61f972d96c4d5ab85f96b9199ac8bf977" );
+       Toast.makeText(getContext(), "Fetching data", Toast.LENGTH_LONG).show();
+       client.get("https://hackelite.herokuapp.com/telecom", new AsyncHttpResponseHandler() {
+           @Override
+           public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+               try {
+                   JSONObject jsonObject = new JSONObject(new String(responseBody));
+                    Iterator<String> str = jsonObject.keys();
+                   List<DataEntry> dataEntries=new ArrayList<>();
+                   int i = 0;
+                    while (str.hasNext()){
+                        String key = str.next();
+                        dataEntries.add(new ValueDataEntry(key, jsonObject.getDouble(key)));
+                    }
+                   pie.data(dataEntries);
+                    anyChartView.setChart(pie);
+               } catch (JSONException e) {
+                   e.printStackTrace();
+               }
+           }
+
+           @Override
+           public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+               setupPiechart();
+           }
+       });
+   }
 
 }
