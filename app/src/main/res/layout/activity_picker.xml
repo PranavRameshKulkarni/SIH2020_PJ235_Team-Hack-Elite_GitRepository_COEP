@@ -28,8 +28,47 @@
         android:layout_below="@+id/selected_place"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="32dp"
+        android:background="@color/colorPrimary"
         android:gravity="center"
-        android:text="Pick Place" />
+        android:text="Pick Place"
+        android:padding="8dp"
+        android:textColor="@color/white" />
+
+    <RadioGroup
+        android:id="@+id/radiogrp1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/place_picker"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="150dp"
+        android:layout_marginLeft="250dp">
+
+        <RadioButton
+            android:id="@+id/tower1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tower" />
+
+        <RadioButton
+            android:id="@+id/Wifi1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="WiFi" />
+
+        <RadioButton
+            android:id="@+id/telex1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Telephone Exchange" />
+
+        <RadioButton
+            android:id="@+id/csc1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Customer Service" />
+    </RadioGroup>
 
 
     <Button
