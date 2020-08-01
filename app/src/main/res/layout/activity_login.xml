@@ -104,7 +104,7 @@
                     android:background="@android:color/transparent"
                     android:gravity="center_vertical"
                     android:hint="@string/password_placeholder"
-                    android:inputType="numberPassword"
+                    android:inputType="textPassword"
                     android:textColor="#fff"
                     android:textColorHint="#fff"
                     android:textSize="12sp" />
@@ -238,7 +238,7 @@
                     android:background="@android:color/transparent"
                     android:gravity="center_vertical"
                     android:hint="@string/password_placeholder"
-                    android:inputType="numberPassword"
+                    android:inputType="textPassword"
                     android:textColor="#fff"
                     android:textColorHint="#fff"
                     android:textSize="12sp" />
