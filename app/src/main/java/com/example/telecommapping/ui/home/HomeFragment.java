@@ -194,6 +194,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Permis
                 }
             }
         });
+        Fragment fragment = this;
         view.setFocusableInTouchMode(true);
         view.requestFocus();
         view.setOnKeyListener(new View.OnKeyListener() {
@@ -208,7 +209,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Permis
                     }
                     else {
                         getChildFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                        System.exit(1);
+
                     }
                     return true;
                 }
@@ -280,11 +281,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Permis
                 }
                 break;
             case R.id.wifi_button:
-                try {
-                    get_places_clone("wifi");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                get_places("wifi");
+//                try {
+//                    get_places_clone("wifi");
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
                 break;
 
         }
@@ -440,7 +442,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Permis
         ArrayList<LocationModel> points = new ArrayList<>();
 
         for (NearbyAtlasResult place : places) {
-            points.add(new LocationModel(place.getLatitude(), place.getLongitude(), place.getPlaceName()));
+            points.add(new LocationModel().setLocation(place.getLatitude(), place.getLongitude(), place.getPlaceAddress(), place.getPlaceName()));
         }
         addOverLay(points, false);
     }
@@ -452,11 +454,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Permis
             for(int i=0; i<list.size();i++){
                 LatLng latLng = new LatLng(list.get(i).lat, list.get(i).lng);
 
-                Marker marker = mapmyIndiaMap.addMarker(new MarkerOptions().position(latLng).title(list.get(i).radio).snippet("tower"));
+                Marker marker = mapmyIndiaMap.addMarker(new MarkerOptions().position(latLng).title(list.get(i).name).snippet(list.get(i).address));
 
 
             }
-            mapmyIndiaMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 13));
+            mapmyIndiaMap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())));
+            mapmyIndiaMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 11));
 
         }
     }
