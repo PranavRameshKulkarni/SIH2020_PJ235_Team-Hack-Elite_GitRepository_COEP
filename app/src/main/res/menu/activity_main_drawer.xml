@@ -26,7 +26,7 @@
             android:title="Add Places" />
         <item
             android:id="@+id/nav_feedback"
-            android:icon="@drawable/ic_notifications_safety"
+            android:icon="@drawable/ic_baseline_feedback_24"
             android:title="Feedback" />
 
         <item
