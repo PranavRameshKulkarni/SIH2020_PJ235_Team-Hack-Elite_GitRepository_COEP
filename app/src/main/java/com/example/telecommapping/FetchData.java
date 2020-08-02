@@ -12,6 +12,7 @@ import org.json.JSONObject;
 
 import cz.msebera.android.httpclient.Header;
 
+
 public class FetchData {
 
     public Double lat, lng;

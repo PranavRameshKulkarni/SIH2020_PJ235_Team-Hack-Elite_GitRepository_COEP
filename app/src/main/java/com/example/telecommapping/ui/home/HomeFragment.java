@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -104,6 +105,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Permis
     private final String url = "https://hackelite.herokuapp.com/places";
 
 
+
     private boolean hidden = true;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -126,6 +128,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Permis
             mapFragment.getMapAsync(this);
         }
         autoSuggestText = view.findViewById(R.id.auto_suggest);
+
         fab = view.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -217,6 +220,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Permis
             }
         });
 
+
+
         //spinner
         Spinner spin = getActivity().findViewById(R.id.spinner);
         spin.setOnItemSelectedListener((AdapterView.OnItemSelectedListener) this);
@@ -238,7 +243,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Permis
     public void onNothingSelected(AdapterView<?> arg0) {
         // TODO Auto-generated method stub
     }
-
 
 
 
