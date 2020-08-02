@@ -50,6 +50,7 @@ import com.mapbox.mapboxsdk.annotations.Icon;
 import com.mapbox.mapboxsdk.annotations.IconFactory;
 import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
+import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.location.LocationComponent;
@@ -62,11 +63,14 @@ import com.mapbox.mapboxsdk.maps.SupportMapFragment;
 import com.mapmyindia.sdk.plugins.places.autocomplete.model.PlaceOptions;
 import com.mapmyindia.sdk.plugins.places.autocomplete.ui.PlaceAutocompleteFragment;
 import com.mapmyindia.sdk.plugins.places.autocomplete.ui.PlaceSelectionListener;
+import com.mmi.services.api.Place;
+import com.mmi.services.api.PlaceResponse;
 import com.mmi.services.api.autosuggest.AutoSuggestCriteria;
 import com.mmi.services.api.autosuggest.model.ELocation;
 import com.mmi.services.api.nearby.MapmyIndiaNearby;
 import com.mmi.services.api.nearby.model.NearbyAtlasResponse;
 import com.mmi.services.api.nearby.model.NearbyAtlasResult;
+import com.mmi.services.api.reversegeocode.MapmyIndiaReverseGeoCode;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -522,7 +526,67 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Permis
             }
         });
 
+//        Pick Custom location
+        mapmyIndiaMap.setCameraPosition(setCameraAndTilt());
+
+
+        mapmyIndiaMap.addOnMapClickListener(new MapboxMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(@NonNull LatLng latLng) {
+                mapmyIndiaMap.clear();
+                    reverseGeocode(latLng.getLatitude(), latLng.getLongitude());
+                    addcustMarker(latLng.getLatitude(), latLng.getLongitude());
+
+
+            }
+        });
+
     }
+//    pick Custom loc
+protected CameraPosition setCameraAndTilt() {
+    CameraPosition cameraPosition = new CameraPosition.Builder().target(new LatLng(
+            28.551087, 77.257373)).zoom(14).tilt(0).build();
+    return cameraPosition;
+}
+
+    private void reverseGeocode(Double latitude, Double longitude) {
+        MapmyIndiaReverseGeoCode.builder()
+                .setLocation(latitude, longitude)
+                .build().enqueueCall(new Callback<PlaceResponse>() {
+            @Override
+            public void onResponse(Call<PlaceResponse> call, Response<PlaceResponse> response) {
+                if (response.code() == 200) {
+                    if (response.body() != null) {
+                        List<Place> placesList = response.body().getPlaces();
+                        Place place = placesList.get(0);
+                        String add = place.getFormattedAddress();
+                        Toast.makeText(getContext(), add, Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(getContext(), "Not able to get value, Try again.", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(getContext(), response.message(), Toast.LENGTH_LONG).show();
+                }
+
+
+            }
+            @Override
+            public void onFailure(Call<PlaceResponse> call, Throwable t) {
+                Toast.makeText(getContext(), t.toString(), Toast.LENGTH_LONG).show();
+            }
+        });
+
+    }
+//    pick custom loc
+private void addcustMarker(double latitude, double longitude) {
+    mapmyIndiaMap.addMarker(new MarkerOptions().position(new LatLng(
+            latitude, longitude)));
+}
+
+
+
+
+
 
     @Override
     public void onMapError(int i, String s) {
