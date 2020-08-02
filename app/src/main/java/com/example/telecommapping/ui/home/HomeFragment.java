@@ -60,6 +60,8 @@ import com.mapbox.mapboxsdk.annotations.Icon;
 import com.mapbox.mapboxsdk.annotations.IconFactory;
 import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
+import com.mapbox.mapboxsdk.annotations.PolygonOptions;
+import com.mapbox.mapboxsdk.annotations.PolylineOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.camera.CameraUpdate;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
@@ -484,7 +486,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Permis
         progressBar.setVisibility(View.GONE);
         String[] arrayList = new String[array.size()];
         for(int i = 0; i<array.size();i++){
-            arrayList[i] = "Tower No: "+(i+1)+" ,name: "+array.get(i).name+" ,distance = "+array.get(i).distance;
+            arrayList[i] = "Tower No: "+(i+1)+" ,name: "+array.get(i).name+" ,distance = "+array.get(i).distance+" m";
         }
         AlertDialog.Builder alt_bld = new AlertDialog.Builder(getContext());
         //alt_bld.setIcon(R.drawable.icon);
@@ -666,8 +668,33 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Permis
             @Override
             public boolean onMarkerClick(@NonNull Marker marker) {
 
-              Toast.makeText(getActivity(), marker.getPosition().toString(), Toast.LENGTH_LONG).show();
-
+              //Toast.makeText(getActivity(), marker.getPosition().toString(), Toast.LENGTH_LONG).show();
+                LatLng circle_center = new LatLng(marker.getPosition().getLatitude(),marker.getPosition().getLongitude());
+                String tower_type = marker.getTitle();
+                double circle_radius = 0;
+                if(tower_type.equalsIgnoreCase("LPBTS"))   {
+                    circle_radius = 1.0;
+                }
+                else if(tower_type.equalsIgnoreCase("RTP"))   {
+                    circle_radius = 2.0;
+                }
+                else if(tower_type.equalsIgnoreCase("RTT"))   {
+                    circle_radius = 3.0;
+                }
+                else if(tower_type.equalsIgnoreCase("GBM"))   {
+                    circle_radius = 1.0;
+                }
+                else if(tower_type.equalsIgnoreCase("GBT"))   {
+                    circle_radius = 4.0;
+                }
+                else if(tower_type.equalsIgnoreCase("COW(GBT)"))   {
+                    circle_radius = 2.0;
+                }
+                else if(tower_type.equalsIgnoreCase("Wall Mount"))   {
+                    circle_radius = 2.0;
+                }
+                Log.i("Tower Type : ", tower_type+"\t\t"+"Coverage Radius : "+circle_radius);
+                addCircle(circle_center,circle_radius);
                 return false;
             }
         });
@@ -777,5 +804,23 @@ private void addcustMarker(double latitude, double longitude) {
         }
     }
 
-
+    private void addCircle(LatLng latLng, double radius)
+    {
+        double R = 6371d; // earth's mean radius in km
+        double d = radius/R; //radius given in km
+        double lat1 = Math.toRadians(latLng.getLatitude());
+        double lon1 = Math.toRadians(latLng.getLongitude());
+        PolygonOptions options = new PolygonOptions();
+        for (int x = 0; x <= 360; x++)
+        {
+            double brng = Math.toRadians(x);
+            double latitudeRad = Math.asin(Math.sin(lat1)*Math.cos(d) + Math.cos(lat1)*Math.sin(d)*Math.cos(brng));
+            double longitudeRad = (lon1 + Math.atan2(Math.sin(brng)*Math.sin(d)*Math.cos(lat1), Math.cos(d)-Math.sin(lat1)*Math.sin(latitudeRad)));
+            options.add(new LatLng(Math.toDegrees(latitudeRad), Math.toDegrees(longitudeRad)));
+            options.fillColor(Color.parseColor("#0FFF0000"));
+            //options.strokeColor(Color.parseColor("#fff0e6"));
+        }
+        mapmyIndiaMap.addPolygon(options);
+        //mapmyIndiaMap.addPolyline(options.color(Color.BLACK).width(2));
+    }
 }

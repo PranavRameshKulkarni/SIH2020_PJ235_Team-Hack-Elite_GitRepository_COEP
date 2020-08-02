@@ -4,4 +4,5 @@
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#2196F3</color>
     <color name="backgroundEditText">#5cffffff</color>
+    <color name="coverageCircle">#1AFFEB3B</color>
 </resources>

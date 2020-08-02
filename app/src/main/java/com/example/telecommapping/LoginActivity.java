@@ -188,7 +188,7 @@ public class LoginActivity extends AppCompatActivity {
                     Map<String,String> mobile = new HashMap<String, String>();
                     mobile.put("mobile", Mobile_number);
                     JSONObject Mobile = new JSONObject(mobile);
-                    if(Signup_password.equalsIgnoreCase(Password_confirm)) {
+                    if(Signup_password.equalsIgnoreCase(Password_confirm) && Signup_password.length() >= 8 && Mobile_number.length() == 10) {
 
                         RequestParams requestParams = new RequestParams();
                         requestParams.put("email", Signup_email);
@@ -243,7 +243,15 @@ public class LoginActivity extends AppCompatActivity {
                         }
 
                     }
-                    else    {
+                    else if(Signup_password.length() < 8)   {
+                        Toast toast2 = Toast.makeText(getApplicationContext(), "Password is too short.", Toast.LENGTH_SHORT);
+                        toast2.show();
+                    }
+                    else if(Mobile_number.length() != 10)   {
+                        Toast toast2 = Toast.makeText(getApplicationContext(), "Mobile number is not correct.", Toast.LENGTH_SHORT);
+                        toast2.show();
+                    }
+                    else {
                         Toast toast2 = Toast.makeText(getApplicationContext(), "Password does not match", Toast.LENGTH_SHORT);
                         toast2.show();
                     }
