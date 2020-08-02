@@ -61,6 +61,7 @@ import com.mapbox.mapboxsdk.annotations.IconFactory;
 import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.annotations.PolygonOptions;
+import com.mapbox.mapboxsdk.annotations.Polyline;
 import com.mapbox.mapboxsdk.annotations.PolylineOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.camera.CameraUpdate;
@@ -124,6 +125,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Permis
     private ImageButton  wifi_btn, towers_button, telephone_exchange_btn, csc_button;
     private ProgressBar progressBar;
     private FrameLayout frameLayout;
+    Polyline polyline;
     SupportMapFragment mapFragment = null;
     private List<LatLng> latLngList = new ArrayList<>();
     String[] range = { "5 km", "10 km", "15 km"};
@@ -754,8 +756,9 @@ protected CameraPosition setCameraAndTilt() {
 private void addcustMarker(double latitude, double longitude) {
         location.setLatitude(latitude);
         location.setLongitude(longitude);
-    mapmyIndiaMap.addMarker(new MarkerOptions().position(new LatLng(
+        mapmyIndiaMap.addMarker(new MarkerOptions().position(new LatLng(
             latitude, longitude)));
+//        mapmyIndiaMap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())).title("Picked Location"));
 }
 
 
@@ -818,9 +821,16 @@ private void addcustMarker(double latitude, double longitude) {
             double longitudeRad = (lon1 + Math.atan2(Math.sin(brng)*Math.sin(d)*Math.cos(lat1), Math.cos(d)-Math.sin(lat1)*Math.sin(latitudeRad)));
             options.add(new LatLng(Math.toDegrees(latitudeRad), Math.toDegrees(longitudeRad)));
             options.fillColor(Color.parseColor("#0FFF0000"));
-            //options.strokeColor(Color.parseColor("#fff0e6"));
+            options.strokeColor(Color.parseColor("#FFFF0000"));
         }
         mapmyIndiaMap.addPolygon(options);
-        //mapmyIndiaMap.addPolyline(options.color(Color.BLACK).width(2));
+
+        if(polyline != null)    {
+            mapmyIndiaMap.removePolyline(polyline);
+        }
+        PolylineOptions polylineOptions = new PolylineOptions();
+        polylineOptions.add(new LatLng(location.getLatitude(),location.getLongitude()));
+        polylineOptions.add(latLng);
+        polyline = mapmyIndiaMap.addPolyline(polylineOptions.color(Color.BLUE).width(2));
     }
 }
