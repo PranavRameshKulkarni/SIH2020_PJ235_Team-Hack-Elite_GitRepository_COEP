@@ -176,13 +176,17 @@ public class LoginActivity extends AppCompatActivity {
                     final TextView signup_email = (TextView) findViewById(R.id.email_singup);
                     final TextView signup_password = (TextView) findViewById(R.id.password_singup);
                     final TextView password_confirm = (TextView) findViewById(R.id.password_confirm);
+                    final TextView first_name = (TextView) findViewById(R.id.first_name);
+                    final TextView last_name = (TextView) findViewById(R.id.last_name);
+                    final TextView mobile_number = (TextView) findViewById(R.id.mobileno);
                     final String Signup_email = signup_email.getText().toString();
                     final String Signup_password = signup_password.getText().toString();
                     final String Password_confirm = password_confirm.getText().toString();
-                    final String First_name = "ABC";
-                    final String Last_name = "XYZ";
+                    final String First_name = first_name.getText().toString();
+                    final String Last_name = last_name.getText().toString();
+                    final String Mobile_number = mobile_number.getText().toString();
                     Map<String,String> mobile = new HashMap<String, String>();
-                    mobile.put("mobile", "9421563900");
+                    mobile.put("mobile", Mobile_number);
                     JSONObject Mobile = new JSONObject(mobile);
                     if(Signup_password.equalsIgnoreCase(Password_confirm)) {
 
