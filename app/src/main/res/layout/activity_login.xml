@@ -161,7 +161,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="20dp"
         android:gravity="center_horizontal"
         android:orientation="vertical"
         android:visibility="invisible"
@@ -170,7 +170,7 @@
         <androidx.cardview.widget.CardView
             android:layout_width="52dp"
             android:layout_height="52dp"
-            android:layout_marginBottom="40dp"
+            android:layout_marginBottom="20dp"
             app:cardBackgroundColor="#b9ffffff"
             app:cardCornerRadius="26dp"
             app:cardElevation="1dp">
@@ -188,7 +188,7 @@
         <androidx.cardview.widget.CardView
             android:layout_width="@dimen/second_card_width"
             android:layout_height="@dimen/second_card_height"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="10dp"
             app:cardBackgroundColor="@color/backgroundEditText"
             app:cardCornerRadius="@dimen/second_card_radius"
             app:cardElevation="0dp">
@@ -217,9 +217,108 @@
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
+            android:layout_width="180dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="10dp"
+            app:cardBackgroundColor="#5cffffff"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="0dp">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="176dp"
+                android:layout_height="36dp"
+                android:layout_gravity="center"
+                app:cardBackgroundColor="#00ffffff"
+                app:cardCornerRadius="18dp"
+                app:cardElevation="0dp">
+
+                <EditText
+                    android:id="@+id/first_name"
+                    android:layout_width="150dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:background="@android:color/transparent"
+                    android:gravity="center_vertical"
+                    android:hint="First Name"
+                    android:inputType="textPersonName"
+                    android:textColor="#fff"
+                    android:textColorHint="#fff"
+                    android:textSize="12sp"/>
+
+            </androidx.cardview.widget.CardView>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="180dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="10dp"
+            app:cardBackgroundColor="#5cffffff"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="0dp">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="176dp"
+                android:layout_height="36dp"
+                android:layout_gravity="center"
+                app:cardBackgroundColor="#00ffffff"
+                app:cardCornerRadius="18dp"
+                app:cardElevation="0dp">
+
+                <EditText
+                    android:id="@+id/last_name"
+                    android:layout_width="150dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:background="@android:color/transparent"
+                    android:gravity="center_vertical"
+                    android:hint="Last Name"
+                    android:inputType="textPersonName"
+                    android:textColor="#fff"
+                    android:textColorHint="#fff"
+                    android:textSize="12sp"/>
+
+            </androidx.cardview.widget.CardView>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="180dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="10dp"
+            app:cardBackgroundColor="#5cffffff"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="0dp">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="176dp"
+                android:layout_height="36dp"
+                android:layout_gravity="center"
+                app:cardBackgroundColor="#00ffffff"
+                app:cardCornerRadius="18dp"
+                app:cardElevation="0dp">
+
+                <EditText
+                    android:id="@+id/mobileno"
+                    android:layout_width="150dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:background="@android:color/transparent"
+                    android:gravity="center_vertical"
+                    android:hint="Mobile Number"
+                    android:inputType="phone"
+                    android:textColor="#fff"
+                    android:textColorHint="#fff"
+                    android:textSize="12sp"/>
+
+            </androidx.cardview.widget.CardView>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
             android:layout_width="@dimen/second_card_width"
             android:layout_height="@dimen/second_card_height"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="10dp"
             app:cardBackgroundColor="#5cffffff"
             app:cardCornerRadius="@dimen/second_card_radius"
             app:cardElevation="0dp">
@@ -250,7 +349,7 @@
         <androidx.cardview.widget.CardView
             android:layout_width="@dimen/second_card_width"
             android:layout_height="@dimen/second_card_height"
-            android:layout_marginBottom="50dp"
+            android:layout_marginBottom="30dp"
             app:cardBackgroundColor="#5cffffff"
             app:cardCornerRadius="@dimen/second_card_radius"
             app:cardElevation="0dp">
@@ -272,7 +371,7 @@
                     android:background="@android:color/transparent"
                     android:gravity="center_vertical"
                     android:hint="@string/confirm_password_placeholder"
-                    android:inputType="numberPassword"
+                    android:inputType="textPassword"
                     android:textColor="#fff"
                     android:textColorHint="#fff"
                     android:textSize="12sp" />
