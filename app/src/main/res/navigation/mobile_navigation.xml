@@ -31,4 +31,9 @@
         android:name="com.example.telecommapping.ui.Addplaces.AddPlacesFragment"
         android:label="Add Places"
         tools:layout="@layout/fragment_addplaces" />
+    <fragment
+        android:id="@+id/nav_logout"
+        android:name="com.example.telecommapping.ui.Logout.LogoutFragment"
+        android:label="fragment_logout"
+        tools:layout="@layout/fragment_logout" />
 </navigation>

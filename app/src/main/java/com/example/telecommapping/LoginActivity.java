@@ -157,7 +157,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     // your handler code here
                     //Handle code of login here
-                    Intent intent= new Intent(LoginActivity.this, NavigationActivity.class);
+                    Intent intent= new Intent(LoginActivity.this, CheckPermissions.class);
                     startActivity(intent);
                     Toast toast = Toast.makeText(getApplicationContext(), "Successfully Register", Toast.LENGTH_SHORT);
                     toast.show();
@@ -394,7 +394,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     // your handler code here
                     //Handle code of login here
-                    Intent intent=new Intent(LoginActivity.this, NavigationActivity.class);
+                    Intent intent=new Intent(LoginActivity.this, CheckPermissions.class);
                     startActivity(intent);
                     Toast toast = Toast.makeText(getApplicationContext(), "Successfully login", Toast.LENGTH_SHORT);
                     toast.show();
