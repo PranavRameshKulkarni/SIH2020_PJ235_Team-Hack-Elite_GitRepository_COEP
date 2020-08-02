@@ -1,6 +1,8 @@
 package com.example.telecommapping.ui.Logout;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -8,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.example.telecommapping.LoginActivity;
 import com.example.telecommapping.R;
@@ -27,6 +30,9 @@ public class LogoutFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    public static final String MYPREFERENCES = "MyPrefs" ;
+    SharedPreferences sharedPreferences;
 
     public LogoutFragment() {
         // Required empty public constructor
@@ -51,8 +57,18 @@ public class LogoutFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sharedPreferences = this.getActivity().getSharedPreferences(MYPREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+        editor.commit();
         Intent intent = new Intent(getActivity(), LoginActivity.class);
         startActivity(intent);
         if (getArguments() != null) {
@@ -64,7 +80,15 @@ public class LogoutFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+//        View root = inflater.inflate(R.layout.fragment_logout, container, false);
+//        final Button logout_button = (Button) root.findViewById(R.id.logout_tv);
+//        logout_button.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                sharedPreferences = getSharedPreferences
+//            }
+//        });
         return inflater.inflate(R.layout.fragment_logout, container, false);
+
     }
 }

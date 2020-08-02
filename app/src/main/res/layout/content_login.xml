@@ -21,11 +21,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_marginTop="40dp"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:layout_alignParentLeft="true">
+        android:visibility="visible">
 
         <androidx.cardview.widget.CardView
             android:layout_width="52dp"
@@ -54,6 +55,7 @@
             app:cardElevation="0dp">
 
             <EditText
+                android:id="@+id/login_username"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -73,6 +75,7 @@
             app:cardElevation="0dp">
 
             <EditText
+                android:id="@+id/login_password"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -95,7 +98,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:gravity="center_horizontal"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="visible">
 
         <TextView
             style="@style/TextAppearance.AppCompat.Display3"
@@ -115,8 +119,8 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="20dp"
                 android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
                 android:layout_weight="1"
                 android:gravity="center_horizontal">
 
@@ -124,15 +128,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="20dp"
-                    app:srcCompat="@drawable/ic_facebook_blue"
-                    android:layout_marginRight="20dp" />
+                    android:layout_marginRight="20dp"
+                    app:srcCompat="@drawable/ic_facebook_blue" />
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="20dp"
-                    app:srcCompat="@drawable/ic_instagram_blue"
-                    android:layout_marginRight="20dp" />
+                    android:layout_marginRight="20dp"
+                    app:srcCompat="@drawable/ic_instagram_blue" />
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -144,29 +148,29 @@
                 android:layout_width="wrap_content"
                 android:layout_height="70dp"
                 android:layout_marginEnd="-35dp"
+                android:layout_marginRight="-35dp"
                 app:cardBackgroundColor="@color/colorPrimary"
                 app:cardCornerRadius="35dp"
-                app:cardElevation="0dp"
-                android:layout_marginRight="-35dp">
+                app:cardElevation="0dp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:paddingEnd="60dp"
                     android:paddingStart="27dp"
-                    android:paddingRight="60dp"
-                    android:paddingLeft="27dp">
+                    android:paddingLeft="27dp"
+                    android:paddingEnd="60dp"
+                    android:paddingRight="60dp">
 
                     <TextView
                         style="@style/TextAppearance.AppCompat.Subhead"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="16dp"
+                        android:layout_marginRight="16dp"
                         android:text="OR"
                         android:textColor="#daffffff"
-                        android:textStyle="bold"
-                        android:layout_marginRight="16dp" />
+                        android:textStyle="bold" />
 
                     <TextView
                         style="@style/TextAppearance.AppCompat.Subhead"
