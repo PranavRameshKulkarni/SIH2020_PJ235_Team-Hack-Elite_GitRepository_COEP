@@ -22,4 +22,11 @@
     <string name="or">OR</string>
     <string name="fb_icon">Facebook icon</string>
     <string name="instagram_icon">Instagram Icon</string>
+    <string-array name="feedbackchoice">
+        <item>Satisfied</item>
+        <item>Satisfied Needs Improvement</item>
+        <item>Not Satisfied - Wrong Location</item>
+        <item>Not Satisfied - Wrong Attributes</item>
+
+    </string-array>
 </resources>

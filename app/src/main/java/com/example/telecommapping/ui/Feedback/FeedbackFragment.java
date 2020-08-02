@@ -9,6 +9,11 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.telecommapping.R;
 
@@ -17,7 +22,7 @@ import com.example.telecommapping.R;
  * Use the {@link com.example.telecommapping.ui.Feedback.FeedbackFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FeedbackFragment extends Fragment {
+public class FeedbackFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -62,7 +67,34 @@ public class FeedbackFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_feedback, container, false);
+        View root  = inflater.inflate(R.layout.fragment_feedback, container, false);
+        Spinner spinner = root.findViewById(R.id.feedback_choice);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),R.array.feedbackchoice,android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(this);
+
+
+
+//        feedback btn
+        Button send_feedback = root.findViewById(R.id.send_feedback);
+        send_feedback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast toast=Toast. makeText(getContext(),"Feedback Sent",Toast. LENGTH_SHORT);
+                toast. show();
+            }
+        });
+        return root;
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
     }
 }

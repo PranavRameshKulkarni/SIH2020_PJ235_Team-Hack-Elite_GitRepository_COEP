@@ -1,14 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    android:background="@color/white"
     tools:context="com.example.telecommapping.ui.Feedback.FeedbackFragment">
-
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
+        android:id="@+id/linearLayoutfeed"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="40dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:layout_alignParentLeft="true">
+        <androidx.cardview.widget.CardView
+            android:layout_width="280dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="40dp"
+            app:cardBackgroundColor="#5cffffff"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="0dp">
+
+            <EditText
+                android:id="@+id/edittextUsername"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@android:color/transparent"
+                android:hint="Username"
+                android:padding="8dp"
+                android:textColor="#000"
+                android:textColorHint="#000"
+                android:textSize="16sp" />
+
+
+        </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView
+            android:layout_width="280dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="50dp"
+            app:cardBackgroundColor="#5cffffff"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="0dp">
+
+            <EditText
+                android:id="@+id/edittextMobile"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@android:color/transparent"
+                android:hint="Mobile Number"
+                android:inputType="phone"
+                android:padding="8dp"
+                android:textColor="#000"
+                android:textColorHint="#000"
+                android:textSize="16sp" />
+        </androidx.cardview.widget.CardView>
+
+        <Spinner
+            android:id="@+id/feedback_choice"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            />
+
+        <EditText
+            android:layout_marginTop="40dp"
+            android:id="@+id/suggestion"
+            android:layout_width="250dp"
+            android:layout_height="125dp"
+            android:layout_gravity="center"
+            android:background="@android:color/transparent"
+            android:hint="Suggesstions"
+            android:padding="8dp"
+            android:textColor="#000"
+            android:textColorHint="#000"
+            android:textSize="16sp"
+            />
+
+        <Button
+
+            android:id="@+id/send_feedback"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:text="Send Feedback"
+            android:layout_marginBottom="40dp"
+
+            android:padding="8dp"
+            android:background="@color/colorPrimaryDark"
+            android:textColor="@color/white"/>
+
+
+    </LinearLayout>
+
 
 </FrameLayout>
