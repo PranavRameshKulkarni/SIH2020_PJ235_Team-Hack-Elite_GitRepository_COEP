@@ -2,8 +2,13 @@ package com.example.telecommapping.ui.home;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,12 +21,16 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -32,6 +41,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import com.example.telecommapping.LocationModel;
@@ -51,6 +61,7 @@ import com.mapbox.mapboxsdk.annotations.IconFactory;
 import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
+import com.mapbox.mapboxsdk.camera.CameraUpdate;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.location.LocationComponent;
@@ -81,7 +92,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.stream.Collectors;
 
 import cz.msebera.android.httpclient.Header;
 import retrofit2.Call;
@@ -118,6 +138,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Permis
         mCircularReveal.setVisibility(View.GONE);;
         progressBar = root.findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.GONE);
+        location = new Location("");
+        location.setLatitude(28.7041);
+        location.setLongitude(77.1025);
         progressBar.getIndeterminateDrawable().setColorFilter(0xF2f20000,
                 android.graphics.PorterDuff.Mode.MULTIPLY);
         return root;
@@ -247,29 +270,15 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Permis
     public void onNothingSelected(AdapterView<?> arg0) {
         // TODO Auto-generated method stub
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onClick(View v) {
         hideRevealView();
         switch (v.getId()){
             case R.id.towers_button:
-                getTowers();
+//                showdialog();
+                progressBar.setVisibility(View.VISIBLE);
+                getTowers("");
 
                 break;
             case R.id.telephone_exchange_button:
@@ -289,16 +298,59 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Permis
                 }
                 break;
             case R.id.wifi_button:
-                get_places("wifi");
-//                try {
-//                    get_places_clone("wifi");
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
+//                get_places("wifi");
+                try {
+                    get_places_clone("wifi");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 break;
 
         }
 
+    }
+
+    public void showdialog(){
+        String[] arrayList = new String[23];
+        arrayList[0] = "Ambala";
+        arrayList[1] = "Bhiwani";
+        arrayList[2] = "Charkhi";
+        arrayList[3] = "Dadri";
+        arrayList[4] = "Faridabad";
+        arrayList[5] = "Fatehabad";
+        arrayList[6] = "Gurugram";
+        arrayList[7] = "Hisar";
+        arrayList[8] = "Jhajjar";
+        arrayList[9] = "Jind";
+        arrayList[10] = "Kaithal";
+        arrayList[11] = "Karnal";
+        arrayList[12] = "Kurukshetra";
+        arrayList[13] = "Mahendragarh";
+        arrayList[14] = "Nuh";
+        arrayList[15] = "Palwal";
+        arrayList[16] = "Panchkula";
+        arrayList[17] = "Panipat";
+        arrayList[18] = "Rewari";
+        arrayList[19] = "Rohtak";
+        arrayList[20] = "Sirsa";
+        arrayList[21] = "Sonipat";
+        arrayList[22] = "Yamunanagar";
+
+        AlertDialog.Builder alt_bld = new AlertDialog.Builder(getContext());
+        //alt_bld.setIcon(R.drawable.icon);
+        alt_bld.setTitle("Select a Group Name");
+        alt_bld.setSingleChoiceItems(arrayList, -1, new DialogInterface
+                .OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            public void onClick(DialogInterface dialog, int item) {
+                Toast.makeText(getContext(),
+                        "Group Name = "+arrayList[item], Toast.LENGTH_SHORT).show();
+                dialog.dismiss();// dismiss the alertbox after chose option
+                getTowers(arrayList[item]);
+            }
+        });
+        AlertDialog alert = alt_bld.create();
+        alert.show();
     }
 
     public void get_places_clone(String data) throws JSONException {
@@ -338,6 +390,28 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Permis
         });
 
     }
+    public void getLatLng(String address){
+        Geocoder geocoder =  new Geocoder(getContext());
+        List<Address> addresses;
+        LatLng p1 = null;
+        try {
+            // May throw an IOException
+            addresses = geocoder.getFromLocationName(address, 5);
+            if (address == null) {
+//                return null
+            }
+
+            Address location = addresses.get(0);
+            p1 = new LatLng(location.getLatitude(), location.getLongitude() );
+
+        } catch (IOException ex) {
+
+            ex.printStackTrace();
+        }
+//        return p1;
+        Toast.makeText(getContext(), "Found Address"+p1, Toast.LENGTH_LONG).show();
+
+    }
 
     public void addMarkersFor(List<LocationModel>list){
         progressBar.setVisibility(View.GONE);
@@ -352,23 +426,48 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Permis
         }
     }
 
-    public void getTowers(){
-        InputStream inputStream = getClass().getResourceAsStream("/assets/Haryanatowers.csv");
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void getTowers(String name){
+        InputStream inputStream = getClass().getResourceAsStream("/assets/govtdata.csv");
         List<LocationModel> resultList = new ArrayList();
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
         try {
+            HashMap<LatLng, Double> hash_for_distance = new HashMap<>();
+            HashMap<LatLng, String> hash_normal = new HashMap<>();
             String csvLine;
             int i =0 ;
             while ((csvLine = reader.readLine()) != null) {
                 if(i>0) {
                     String[] row = csvLine.split(",");
-                    if (row[1].equals("Yamunanagar")) {
-                        Log.i("LATLNG", "getTowers: " + csvLine);
-                        resultList.add(new LocationModel(Double.parseDouble(row[2]), Double.parseDouble(row[3]), row[1]));
-                    }
+                    double lat = Double.parseDouble(row[3]);
+                    double lng = Double.parseDouble(row[4]);
+                    Location locationA = new Location("point A");
+                    locationA.setLatitude(lat);
+                    locationA.setLongitude(lng);
+                    Location locationB = new Location("Ambala");
+                    locationB.setLongitude(location.getLongitude());
+                    locationB.setLatitude(location.getLatitude());
+                    double distance = locationA.distanceTo(locationB);
+                    Log.i("VALUE OF DISTANCE", "getTowers: "+distance);
+                    hash_normal.put(new LatLng(locationA.getLatitude(), locationA.getLongitude()), row[5]);
+                    hash_for_distance.put(new LatLng(locationA.getLatitude(), locationA.getLongitude()), distance);
+//                    if (row[1].equals(name)) {
+//                        Log.i("LATLNG", "getTowers: " + csvLine);
+//                        resultList.add(new LocationModel(Double.parseDouble(row[2]), Double.parseDouble(row[3]), row[1]));
+//                    }
                 }
                 i++;
             }
+            hash_for_distance = sortByValue(hash_for_distance);
+            ArrayList<LocationModel> locationModels = new ArrayList<>();
+
+            for (Map.Entry<LatLng, Double> entry : hash_for_distance.entrySet())
+            {
+                Log.i("RESULT", " "+entry.getKey()+" value:"+entry.getValue()+" "+hash_normal.get(entry.getKey()));
+                locationModels.add(new LocationModel().setTower(entry.getKey(), entry.getValue(),hash_normal.get(entry.getKey())));
+            }
+            showDialogFortowers(locationModels);
+//            addMarkersForTowers(locationModels);
         } catch (IOException ex) {
             throw new RuntimeException("Error in reading CSV file: " + ex);
         } finally {
@@ -378,8 +477,49 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Permis
                 throw new RuntimeException("Error while closing input stream: " + e);
             }
         }
-        addMarkersForTowers(resultList);
 
+    }
+
+    public void showDialogFortowers(ArrayList<LocationModel>array){
+        progressBar.setVisibility(View.GONE);
+        String[] arrayList = new String[array.size()];
+        for(int i = 0; i<array.size();i++){
+            arrayList[i] = "Tower No: "+(i+1)+" ,name: "+array.get(i).name+" ,distance = "+array.get(i).distance;
+        }
+        AlertDialog.Builder alt_bld = new AlertDialog.Builder(getContext());
+        //alt_bld.setIcon(R.drawable.icon);
+        alt_bld.setTitle("Select a Telecom infrastructure");
+        alt_bld.setSingleChoiceItems(arrayList, -1, new DialogInterface
+                .OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            public void onClick(DialogInterface dialog, int item) {
+                Toast.makeText(getContext(),
+                        "Group Name = "+arrayList[item], Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+                addMarkersForTowers(array);
+// dismiss the alertbox after chose option
+            }
+        });
+        AlertDialog alert = alt_bld.create();
+        alert.show();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public static <K, V extends Comparable<? super V>> HashMap<K, V> sortByValue(Map<K, V> map) {
+        List<Map.Entry<K, V>> list = new ArrayList<>(map.entrySet());
+        list.sort(Map.Entry.comparingByValue());
+
+        HashMap<K, V> result = new LinkedHashMap<>();
+        int i = 0;
+        for (Map.Entry<K, V> entry : list) {
+            result.put(entry.getKey(), entry.getValue());
+            if(i==5){
+                break;
+            }
+            i++;
+        }
+
+        return result;
     }
 
     public void addMarkersForTowers(List<LocationModel> list){
@@ -387,14 +527,19 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Permis
             mapmyIndiaMap.clear();
 //            IconFactory iconFactory = IconFactory.getInstance(getContext());
 //            Icon icon = iconFactory.fromResource(R.drawable.tower);
+            Log.i("LOCATION", "addMarkersForTowers: "+list.size());
+
             for(int i=0; i<list.size();i++){
+
                 LatLng latLng = new LatLng(list.get(i).lat, list.get(i).lng);
 
-                Marker marker = mapmyIndiaMap.addMarker(new MarkerOptions().position(latLng).title(list.get(i).radio).snippet("tower"));
+                Marker marker = mapmyIndiaMap.addMarker(new MarkerOptions().position(latLng).title(list.get(i).name).snippet("tower"+i+"\n distance= "+list.get(i).distance));
 
 
             }
-            mapmyIndiaMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(list.get(0).lat, list.get(0).lng), 7));
+//            getLatLng(list.get(0).radio);
+            mapmyIndiaMap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())).title("Picked Location"));
+            mapmyIndiaMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 12));
 
         }
     }
@@ -478,17 +623,18 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Permis
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        locationEngine.requestLocationUpdates();
+//        locationEngine.requestLocationUpdates();
 
     }
 
     @Override
     public void onLocationChanged(Location location) {
-        this.location = location;
-        currentLocation = location;
-        setCurrentLocationCamera();
-        mapmyIndiaMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 15));
-        locationEngine.removeLocationEngineListener(this);
+//        this.location = location;
+//        this.location.setLatitude(28.551087);
+//        this.location.setLongitude(77.257373);
+//        currentLocation = this.location;
+//        mapmyIndiaMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(28.551087, 77.257373), 9));
+//        locationEngine.removeLocationEngineListener(this);
     }
 
     @Override
@@ -505,16 +651,16 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Permis
     public void onMapReady(MapboxMap mapboxMap) {
         this.mapmyIndiaMap = mapboxMap;
 
+        mapmyIndiaMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(),location.getLongitude()),9));
 
         mapmyIndiaMap.setPadding(20, 20, 20, 20);
 
         if (PermissionsManager.areLocationPermissionsGranted(getContext())) {
-            enableLocation();
+//            enableLocation();
         } else {
             permissionsManager = new PermissionsManager(this);
             permissionsManager.requestLocationPermissions(getActivity());
         }
-
 
         mapmyIndiaMap.setOnMarkerClickListener(new MapboxMap.OnMarkerClickListener() {
             @Override
@@ -579,6 +725,8 @@ protected CameraPosition setCameraAndTilt() {
     }
 //    pick custom loc
 private void addcustMarker(double latitude, double longitude) {
+        location.setLatitude(latitude);
+        location.setLongitude(longitude);
     mapmyIndiaMap.addMarker(new MarkerOptions().position(new LatLng(
             latitude, longitude)));
 }
@@ -612,8 +760,8 @@ private void addcustMarker(double latitude, double longitude) {
     }
 
     void setCurrentLocationCamera(){
-        if(currentLocation!=null){
-            mapmyIndiaMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),15));
+        if(location!=null){
+            mapmyIndiaMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()),5));
         }
     }
 

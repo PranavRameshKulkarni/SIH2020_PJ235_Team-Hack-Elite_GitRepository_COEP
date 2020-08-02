@@ -1,7 +1,9 @@
 package com.example.telecommapping;
 
+import com.mapbox.mapboxsdk.geometry.LatLng;
+
 public class LocationModel {
-    public double lat, lng;
+    public double lat, lng, distance;
     public String radio, address, name;
     int range;
 
@@ -22,5 +24,13 @@ public class LocationModel {
         return lc;
     }
 
+    public LocationModel setTower(LatLng loc, Double distance, String name){
+        LocationModel lc = new LocationModel();
+        lc.lat = loc.getLatitude();
+        lc.lng = loc.getLongitude();
+        lc.distance = distance;
+        lc.name = name;
+        return lc;
+    }
 
 }
