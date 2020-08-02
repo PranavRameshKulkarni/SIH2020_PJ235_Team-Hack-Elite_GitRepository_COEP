@@ -2,12 +2,16 @@ package com.example.telecommapping;
 
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SharedMemory;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,22 +28,69 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 
+import com.anychart.JsObject;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Dictionary;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.entity.StringEntity;
+import cz.msebera.android.httpclient.message.BasicHeader;
+import cz.msebera.android.httpclient.protocol.HTTP;
 import it.sephiroth.android.library.easing.Back;
 import it.sephiroth.android.library.easing.EasingManager;
 public class LoginActivity extends AppCompatActivity {
 
+    private final String loginUrl = "https://pj234-api.herokuapp.com/api/auth/login/";
+    private final String signupUrl = "https://pj234-api.herokuapp.com/api/users/";
+    public static final String MYPREFERENCES = "MyPrefs" ;
+    SharedPreferences sharedPreferences;
 
 
-        private ViewGroup rootLayout;
+    private ViewGroup rootLayout;
 
-        @Override
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+//        findViewById(R.id.login_tv).bringToFront();
+        sharedPreferences = getSharedPreferences(MYPREFERENCES, Context.MODE_PRIVATE);
+        String data = sharedPreferences.getString("token", "");
+        if( data != "" ) {
+            Log.i("token : ", data);
+            Intent intent=new Intent(LoginActivity.this, CheckPermissions.class);
+            startActivity(intent);
+        }
+        else    {
+            Log.i("No token : ", "Please llog in.");
+        }
+    }
+
+    @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_login);
+
 
             rootLayout = (ViewGroup) findViewById(R.id.main_container);
 
@@ -49,7 +100,7 @@ public class LoginActivity extends AppCompatActivity {
             EditText emailS = (EditText) findViewById(R.id.email_singup);
             EditText passwordS = (EditText) findViewById(R.id.password_singup);
             EditText passwordC = (EditText) findViewById(R.id.password_confirm);
-
+            findViewById(R.id.login_tv).bringToFront();
 
             View.OnFocusChangeListener focuslistene = new View.OnFocusChangeListener() {
                 @Override
@@ -76,9 +127,9 @@ public class LoginActivity extends AppCompatActivity {
             final View animationSquare = findViewById(R.id.animation_square);
             final LinearLayout squareParent = (LinearLayout) animationSquare.getParent();
             final TextView animationTV = (TextView) findViewById(R.id.animation_tv);
-            final ImageView twitterImageView = (ImageView) findViewById(R.id.twitter_img);
-            final ImageView instagramImageView = (ImageView) findViewById(R.id.instagram_img);
-            final ImageView facebokImageView = (ImageView) findViewById(R.id.facebook_img);
+//            final ImageView twitterImageView = (ImageView) findViewById(R.id.twitter_img);
+//            final ImageView instagramImageView = (ImageView) findViewById(R.id.instagram_img);
+//            final ImageView facebokImageView = (ImageView) findViewById(R.id.facebook_img);
             final View singupFormContainer = findViewById(R.id.signup_form_container);
             final View loginFormContainer = findViewById(R.id.login_form_container);
             final int backgroundColor = ContextCompat.getColor(this, R.color.colorPrimary);
@@ -122,14 +173,84 @@ public class LoginActivity extends AppCompatActivity {
             singupTV.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
 
-                    // your handler code here
-                    //Handle code of login here
-                    Intent intent= new Intent(LoginActivity.this, CheckPermissions.class);
-                    startActivity(intent);
-                    Toast toast = Toast.makeText(getApplicationContext(), "Successfully Register", Toast.LENGTH_SHORT);
-                    toast.show();
+                    final TextView signup_email = (TextView) findViewById(R.id.email_singup);
+                    final TextView signup_password = (TextView) findViewById(R.id.password_singup);
+                    final TextView password_confirm = (TextView) findViewById(R.id.password_confirm);
+                    final TextView first_name = (TextView) findViewById(R.id.first_name);
+                    final TextView last_name = (TextView) findViewById(R.id.last_name);
+                    final TextView mobile_number = (TextView) findViewById(R.id.mobileno);
+                    final String Signup_email = signup_email.getText().toString();
+                    final String Signup_password = signup_password.getText().toString();
+                    final String Password_confirm = password_confirm.getText().toString();
+                    final String First_name = first_name.getText().toString();
+                    final String Last_name = last_name.getText().toString();
+                    final String Mobile_number = mobile_number.getText().toString();
+                    Map<String,String> mobile = new HashMap<String, String>();
+                    mobile.put("mobile", Mobile_number);
+                    JSONObject Mobile = new JSONObject(mobile);
+                    if(Signup_password.equalsIgnoreCase(Password_confirm)) {
+
+                        RequestParams requestParams = new RequestParams();
+                        requestParams.put("email", Signup_email);
+                        requestParams.put("first_name", First_name);
+                        requestParams.put("last_name", Last_name);
+                        requestParams.put("password", Signup_password);
+                        requestParams.put("profile", Mobile);
+                        AsyncHttpClient client = new AsyncHttpClient();
+                        JSONObject jsonParams = new JSONObject();
+                        try {
+                            jsonParams.put("email", Signup_email);
+                            jsonParams.put("first_name", First_name);
+                            jsonParams.put("last_name", Last_name);
+                            jsonParams.put("password", Signup_password);
+                            jsonParams.put("profile", Mobile);
+                            StringEntity entity = null;
+
+                            Log.i("JSON : ",jsonParams.toString());
+                            entity = new StringEntity(jsonParams.toString());
+                            entity.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
+
+                            client.post(getApplicationContext(), signupUrl, entity, "application/json", new AsyncHttpResponseHandler() {
+                                @Override
+                                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                                    try {
+                                        Log.i("Success1", new String(responseBody));
+                                        JSONObject jsonObject = new JSONObject(new String(responseBody));
+                                        Log.i("Success2", "" + jsonObject);
+
+                                        Intent intent= new Intent(LoginActivity.this, LoginActivity.class);
+                                        startActivity(intent);
+                                        Toast toast = Toast.makeText(getApplicationContext(), "Successfully Register", Toast.LENGTH_SHORT);
+                                        toast.show();
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                                    if(responseBody == null)    {
+                                        Toast.makeText(getApplicationContext(), "Email already exists!", Toast.LENGTH_SHORT).show();
+                                    }
+                                    else    {
+                                        Log.i("Error", "" + statusCode);
+                                        Toast.makeText(getApplicationContext(), "Please try again.", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                        } catch (UnsupportedEncodingException | JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                    else    {
+                        Toast toast2 = Toast.makeText(getApplicationContext(), "Password does not match", Toast.LENGTH_SHORT);
+                        toast2.show();
+                    }
+
                 }
             });
+
             squareParent.setGravity(Gravity.END);
             animationTV.setText(R.string.sign_up);
 
@@ -188,11 +309,11 @@ public class LoginActivity extends AppCompatActivity {
                     animationTV.requestLayout();
 
                     if (interpolatedTime >= 0.2f && interpolatedTime < 0.3f) {
-                        twitterImageView.setImageResource(R.drawable.ic_twitter_blue);
+//                        twitterImageView.setImageResource(R.drawable.ic_twitter_blue);
                     } else if (interpolatedTime >= 0.45f && interpolatedTime < 0.55f) {
-                        instagramImageView.setImageResource(R.drawable.ic_instagram_blue);
+//                        instagramImageView.setImageResource(R.drawable.ic_instagram_blue);
                     } else if (interpolatedTime >= 0.65f && interpolatedTime < 0.75f) {
-                        facebokImageView.setImageResource(R.drawable.ic_facebook_blue);
+//                        facebokImageView.setImageResource(R.drawable.ic_facebook_blue);
                     }
 
                     singupFormContainer.setAlpha(interpolatedTime);
@@ -309,9 +430,9 @@ public class LoginActivity extends AppCompatActivity {
             final View animationSquare = findViewById(R.id.animation_square);
             final LinearLayout squareParent = (LinearLayout) animationSquare.getParent();
             final TextView animationTV = (TextView) findViewById(R.id.animation_tv);
-            final ImageView twitterImageView = (ImageView) findViewById(R.id.twitter_img);
-            final ImageView instagramImageView = (ImageView) findViewById(R.id.instagram_img);
-            final ImageView facebokImageView = (ImageView) findViewById(R.id.facebook_img);
+//            final ImageView twitterImageView = (ImageView) findViewById(R.id.twitter_img);
+//            final ImageView instagramImageView = (ImageView) findViewById(R.id.instagram_img);
+//            final ImageView facebokImageView = (ImageView) findViewById(R.id.facebook_img);
             final View singupFormContainer = findViewById(R.id.signup_form_container);
             final View loginFormContainer = findViewById(R.id.login_form_container);
             final Button loginTV = (Button) findViewById(R.id.login_tv);
@@ -358,13 +479,55 @@ public class LoginActivity extends AppCompatActivity {
             }
             loginTV.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
+                    Toast toast1 = Toast.makeText(getApplicationContext(), "Fetching data", Toast.LENGTH_SHORT);
+                    toast1.show();
+                    final TextView login_email = (TextView) findViewById(R.id.email);
+                    final TextView login_password = (TextView) findViewById(R.id.password);
+                    final String Login_email = login_email.getText().toString();
+                    final String Login_password = login_password.getText().toString();
+//                    Map<String,String> data = new HashMap<String, String>();
+//                    data.put("username", Login_email);
+//                    data.put("password", Login_password);
+//                    JSONObject _data = new JSONObject(data);
+                    Toast toast3 = Toast.makeText(getApplicationContext(), loginUrl, Toast.LENGTH_SHORT);
+                    toast3.show();
+                    RequestParams requestParams = new RequestParams();
+                    requestParams.put("username", Login_email);
+                    requestParams.put("password", Login_password);
+                    AsyncHttpClient client = new AsyncHttpClient();
+                    client.post(loginUrl,requestParams, new AsyncHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                            try {
+                                Log.i("Success1", new String(responseBody));
+                                JSONObject jsonObject = new JSONObject(new String(responseBody));
+                                Log.i("Success2", ""+jsonObject);
+                                sharedPreferences = getSharedPreferences(MYPREFERENCES, Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
 
-                    // your handler code here
-                    //Handle code of login here
-                    Intent intent=new Intent(LoginActivity.this, CheckPermissions.class);
-                    startActivity(intent);
-                    Toast toast = Toast.makeText(getApplicationContext(), "Successfully login", Toast.LENGTH_SHORT);
-                    toast.show();
+                                editor.putString("token", jsonObject.getString("token"));
+                                editor.putString("username", jsonObject.getJSONObject("user").getString("username"));
+                                editor.putString("first_name", jsonObject.getJSONObject("user").getString("first_name"));
+                                editor.putString("last_name", jsonObject.getJSONObject("user").getString("last_name"));
+                                editor.commit();
+                                Intent intent=new Intent(LoginActivity.this, CheckPermissions.class);
+                                startActivity(intent);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                            Log.i("Error", ""+statusCode);
+                            Toast toast2 = Toast.makeText(getApplicationContext(), new String(responseBody), Toast.LENGTH_SHORT);
+                            toast2.show();
+                        }
+                    });
+
+
+
+
                 }
             });
             squareParent.setGravity(Gravity.START);
@@ -425,11 +588,11 @@ public class LoginActivity extends AppCompatActivity {
                     animationTV.requestLayout();
 
                     if (interpolatedTime >= 0.2f && interpolatedTime < 0.3f) {
-                        facebokImageView.setImageResource(R.drawable.ic_facebook_blue);
+//                        facebokImageView.setImageResource(R.drawable.ic_facebook_blue);
                     } else if (interpolatedTime >= 0.45f && interpolatedTime < 0.55f) {
-                        instagramImageView.setImageResource(R.drawable.ic_instagram_blue);
+//                        instagramImageView.setImageResource(R.drawable.ic_instagram_blue);
                     } else if (interpolatedTime >= 0.65f && interpolatedTime < 0.75f) {
-                        twitterImageView.setImageResource(R.drawable.ic_twitter_blue);
+//                        twitterImageView.setImageResource(R.drawable.ic_twitter_blue);
                     }
 
                     loginFormContainer.setAlpha(interpolatedTime);
