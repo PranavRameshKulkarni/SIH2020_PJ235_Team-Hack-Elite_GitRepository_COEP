@@ -59,7 +59,7 @@ import cz.msebera.android.httpclient.message.BasicHeader;
 import cz.msebera.android.httpclient.protocol.HTTP;
 import it.sephiroth.android.library.easing.Back;
 import it.sephiroth.android.library.easing.EasingManager;
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends \ {
 
     private final String loginUrl = "https://pj234-api.herokuapp.com/api/auth/login/";
     private final String signupUrl = "https://pj234-api.herokuapp.com/api/users/";
