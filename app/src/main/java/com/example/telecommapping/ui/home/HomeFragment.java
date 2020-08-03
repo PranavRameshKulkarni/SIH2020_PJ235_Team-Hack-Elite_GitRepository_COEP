@@ -6,7 +6,11 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -89,6 +93,9 @@ import com.mmi.services.api.reversegeocode.MapmyIndiaReverseGeoCode;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -132,6 +139,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Permis
 
     private final String url = "https://hackelite.herokuapp.com/places";
 
+//    Icon icon = new Icon(R.drawable.blue2_marker);
 
 
     private boolean hidden = true;
@@ -529,26 +537,60 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Permis
     public void addMarkersForTowers(List<LocationModel> list){
         if (mapmyIndiaMap != null) {
             mapmyIndiaMap.clear();
-//            IconFactory iconFactory = IconFactory.getInstance(getContext());
-//            Icon icon = iconFactory.fromResource(R.drawable.tower);
-            Log.i("LOCATION", "addMarkersForTowers: "+list.size());
+            IconFactory iconFactory = IconFactory.getInstance(getContext());
+            Icon icon;
 
+            Log.i("LOCATION", "addMarkersForTowers: "+list.size());
             for(int i=0; i<list.size();i++){
 
                 LatLng latLng = new LatLng(list.get(i).lat, list.get(i).lng);
-
-                Marker marker = mapmyIndiaMap.addMarker(new MarkerOptions().position(latLng).title(list.get(i).name).snippet("tower"+i+"\n distance= "+list.get(i).distance));
-
+                if(list.get(i).name.equalsIgnoreCase("LPBTS"))   {
+                    icon = iconFactory.fromBitmap(getBitmap(R.drawable.ic_marker_blue_2));
+                }
+                else if(list.get(i).name.equalsIgnoreCase("RTP"))   {
+                    icon = iconFactory.fromBitmap(getBitmap(R.drawable.ic_marker_darkblue_2));
+                }
+                else if(list.get(i).name.equalsIgnoreCase("RTT"))   {
+                     icon = iconFactory.fromBitmap(getBitmap(R.drawable.ic_marker_green_2));
+                }
+                else if(list.get(i).name.equalsIgnoreCase("GBM"))   {
+                     icon = iconFactory.fromBitmap(getBitmap(R.drawable.ic_marker_orange_2));
+                }
+                else if(list.get(i).name.equalsIgnoreCase("GBT"))   {
+                    icon = iconFactory.fromBitmap(getBitmap(R.drawable.ic_marker_pink_2));
+                }
+                else if(list.get(i).name.equalsIgnoreCase("COW(GBT)"))   {
+                    icon = iconFactory.fromBitmap(getBitmap(R.drawable.ic_marker_purple_2));
+                }
+                else if(list.get(i).name.equalsIgnoreCase("Wall Mount"))   {
+                    icon = iconFactory.fromBitmap(getBitmap(R.drawable.ic_marker_red_2));
+                }
+                else    {
+                    icon = iconFactory.fromBitmap(getBitmap(R.drawable.ic_marker_person));
+                }
+                Marker marker = mapmyIndiaMap.addMarker(new MarkerOptions().position(latLng)
+                        .title(list.get(i).name).snippet("tower"+i+"\n distance= "+list.get(i).distance).icon(icon));
 
             }
+
 //            getLatLng(list.get(0).radio);
-            mapmyIndiaMap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())).title("Picked Location"));
+            icon = iconFactory.fromBitmap(getBitmap(R.drawable.ic_marker_person));
+            mapmyIndiaMap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())).title("Picked Location").icon(icon));
             mapmyIndiaMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 12));
 
         }
     }
 
+    private Bitmap getBitmap(int drawableRes) {
+        Drawable drawable = getResources().getDrawable(drawableRes);
+        Canvas canvas = new Canvas();
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        canvas.setBitmap(bitmap);
+        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+        drawable.draw(canvas);
 
+        return bitmap;
+    }
 
     public void get_places(String keyword)    {
         try {
@@ -756,8 +798,10 @@ protected CameraPosition setCameraAndTilt() {
 private void addcustMarker(double latitude, double longitude) {
         location.setLatitude(latitude);
         location.setLongitude(longitude);
+        IconFactory iconFactory = IconFactory.getInstance(getContext());
+        Icon icon = iconFactory.fromBitmap(getBitmap(R.drawable.ic_marker_person));
         mapmyIndiaMap.addMarker(new MarkerOptions().position(new LatLng(
-            latitude, longitude)));
+            latitude, longitude)).icon(icon));
 //        mapmyIndiaMap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())).title("Picked Location"));
 }
 
