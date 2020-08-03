@@ -29,4 +29,6 @@
         <item>Not Satisfied - Wrong Attributes</item>
 
     </string-array>
+    <string name="title_activity_profile">Profile</string>
+
 </resources>
