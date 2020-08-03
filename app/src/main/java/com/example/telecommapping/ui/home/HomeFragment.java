@@ -742,13 +742,13 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Permis
                 }
                 else if(tower_type.equalsIgnoreCase("RTT"))   {
                     circle_radius = 3.0;
-                    fill_color = "#0F0D09CF";
                     stroke_color = "#FF66FF00";
+                    fill_color = "#0F0D09CF";
                 }
                 else if(tower_type.equalsIgnoreCase("GBM"))   {
                     circle_radius = 1.0;
-                    fill_color = "#0F800080";
                     stroke_color = "#FFFDA55C";
+                    fill_color = "#0F800080";
                 }
                 else if(tower_type.equalsIgnoreCase("GBT"))   {
                     circle_radius = 4.0;
