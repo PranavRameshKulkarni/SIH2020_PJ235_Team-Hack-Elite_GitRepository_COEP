@@ -728,29 +728,45 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Permis
                 LatLng circle_center = new LatLng(marker.getPosition().getLatitude(),marker.getPosition().getLongitude());
                 String tower_type = marker.getTitle();
                 double circle_radius = 0;
+                String fill_color = "#0FFF0000";
+                String stroke_color = "#FFFF0000";
                 if(tower_type.equalsIgnoreCase("LPBTS"))   {
                     circle_radius = 1.0;
+                    fill_color = "#0F0D09CF";
+                    stroke_color = "#FF0D09CF";
                 }
                 else if(tower_type.equalsIgnoreCase("RTP"))   {
                     circle_radius = 2.0;
+                    fill_color = "#0F0D09CF";
+                    stroke_color = "#FF0D09CF";
                 }
                 else if(tower_type.equalsIgnoreCase("RTT"))   {
                     circle_radius = 3.0;
+                    fill_color = "#0F66FF00";
+                    stroke_color = "#FF66FF00";
                 }
                 else if(tower_type.equalsIgnoreCase("GBM"))   {
                     circle_radius = 1.0;
+                    fill_color = "#0FFDA55C";
+                    stroke_color = "#FFFDA55C";
                 }
                 else if(tower_type.equalsIgnoreCase("GBT"))   {
                     circle_radius = 4.0;
+                    fill_color = "#0FF21090";
+                    stroke_color = "#FFF21090";
                 }
                 else if(tower_type.equalsIgnoreCase("COW(GBT)"))   {
                     circle_radius = 2.0;
+                    fill_color = "#0F800080";
+                    stroke_color = "#FF800080";
                 }
                 else if(tower_type.equalsIgnoreCase("Wall Mount"))   {
                     circle_radius = 2.0;
+                    fill_color = "#0FFF0000";
+                    stroke_color = "#FFFF0000";
                 }
                 Log.i("Tower Type : ", tower_type+"\t\t"+"Coverage Radius : "+circle_radius);
-                addCircle(circle_center,circle_radius);
+                addCircle(circle_center,circle_radius,fill_color,stroke_color);
                 return false;
             }
 
@@ -949,7 +965,7 @@ private void addcustMarker(double latitude, double longitude) {
         }
     }
 
-    private void addCircle(LatLng latLng, double radius)
+    private void addCircle(LatLng latLng, double radius, String fill_color, String stroke_color)
     {
         double R = 6371d; // earth's mean radius in km
         double d = radius/R; //radius given in km
@@ -962,8 +978,8 @@ private void addcustMarker(double latitude, double longitude) {
             double latitudeRad = Math.asin(Math.sin(lat1)*Math.cos(d) + Math.cos(lat1)*Math.sin(d)*Math.cos(brng));
             double longitudeRad = (lon1 + Math.atan2(Math.sin(brng)*Math.sin(d)*Math.cos(lat1), Math.cos(d)-Math.sin(lat1)*Math.sin(latitudeRad)));
             options.add(new LatLng(Math.toDegrees(latitudeRad), Math.toDegrees(longitudeRad)));
-            options.fillColor(Color.parseColor("#0FFF0000"));
-            options.strokeColor(Color.parseColor("#FFFF0000"));
+            options.fillColor(Color.parseColor(fill_color));
+            options.strokeColor(Color.parseColor(stroke_color));
         }
         mapmyIndiaMap.addPolygon(options);
 
