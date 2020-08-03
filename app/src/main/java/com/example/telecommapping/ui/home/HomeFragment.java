@@ -37,6 +37,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -136,10 +137,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Permis
     SupportMapFragment mapFragment = null;
     private List<LatLng> latLngList = new ArrayList<>();
     String[] range = { "5 km", "10 km", "15 km"};
-
+    HashMap<LatLng, Double> hash_for_distance = new HashMap<>();
+    HashMap<LatLng, String> hash_normal = new HashMap<>();
     private final String url = "https://hackelite.herokuapp.com/places";
 
-//    Icon icon = new Icon(R.drawable.blue2_marker);
 
 
     private boolean hidden = true;
@@ -151,8 +152,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Permis
         progressBar = root.findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.GONE);
         location = new Location("");
-        location.setLatitude(28.7041);
-        location.setLongitude(77.1025);
+        location.setLatitude(29.3255);
+        location.setLongitude(76.2998);
         progressBar.getIndeterminateDrawable().setColorFilter(0xF2f20000,
                 android.graphics.PorterDuff.Mode.MULTIPLY);
         return root;
@@ -167,7 +168,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Permis
             mapFragment.getMapAsync(this);
         }
         autoSuggestText = view.findViewById(R.id.auto_suggest);
-
         fab = view.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -441,11 +441,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Permis
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void getTowers(String name){
         InputStream inputStream = getClass().getResourceAsStream("/assets/govtdata.csv");
-        List<LocationModel> resultList = new ArrayList();
+        ArrayList<LocationModel> resultList = new ArrayList();
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
         try {
-            HashMap<LatLng, Double> hash_for_distance = new HashMap<>();
-            HashMap<LatLng, String> hash_normal = new HashMap<>();
             String csvLine;
             int i =0 ;
             while ((csvLine = reader.readLine()) != null) {
@@ -472,12 +470,21 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Permis
             }
             hash_for_distance = sortByValue(hash_for_distance);
             ArrayList<LocationModel> locationModels = new ArrayList<>();
-
+            int p = 0;
             for (Map.Entry<LatLng, Double> entry : hash_for_distance.entrySet())
             {
+
                 Log.i("RESULT", " "+entry.getKey()+" value:"+entry.getValue()+" "+hash_normal.get(entry.getKey()));
-                locationModels.add(new LocationModel().setTower(entry.getKey(), entry.getValue(),hash_normal.get(entry.getKey())));
+                if(p<5) {
+                    locationModels.add(new LocationModel().setTower(entry.getKey(), entry.getValue(), hash_normal.get(entry.getKey())));
+                }
+                else {
+                    resultList.add(new LocationModel().setTower(entry.getKey(), entry.getValue(), hash_normal.get(entry.getKey())));
+
+                }
+                p++;
             }
+            showMarkerNormal(resultList);
             showDialogFortowers(locationModels);
 //            addMarkersForTowers(locationModels);
         } catch (IOException ex) {
@@ -508,6 +515,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Permis
                 Toast.makeText(getContext(),
                         "Group Name = "+arrayList[item], Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
+                mapmyIndiaMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(array.get(item).lat, array.get(item).lng), 18));
                 addMarkersForTowers(array);
 // dismiss the alertbox after chose option
             }
@@ -525,7 +533,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Permis
         int i = 0;
         for (Map.Entry<K, V> entry : list) {
             result.put(entry.getKey(), entry.getValue());
-            if(i==5){
+            if(i==300){
                 break;
             }
             i++;
@@ -536,7 +544,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Permis
 
     public void addMarkersForTowers(List<LocationModel> list){
         if (mapmyIndiaMap != null) {
-            mapmyIndiaMap.clear();
+//            mapmyIndiaMap.clear();
             IconFactory iconFactory = IconFactory.getInstance(getContext());
             Icon icon;
 
@@ -569,17 +577,19 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Permis
                     icon = iconFactory.fromBitmap(getBitmap(R.drawable.ic_marker_person));
                 }
                 Marker marker = mapmyIndiaMap.addMarker(new MarkerOptions().position(latLng)
-                        .title(list.get(i).name).snippet("tower"+i+"\n distance= "+list.get(i).distance).icon(icon));
+                        .title(list.get(i).name).snippet("tower"+(i+1)+"\n distance= "+list.get(i).distance).icon(icon));
 
             }
-
-//            getLatLng(list.get(0).radio);
             icon = iconFactory.fromBitmap(getBitmap(R.drawable.ic_marker_person));
             mapmyIndiaMap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())).title("Picked Location").icon(icon));
-            mapmyIndiaMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 12));
+//            mapmyIndiaMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 12));
+
+            }
+//            getLatLng(list.get(0).radio);
+
 
         }
-    }
+
 
     private Bitmap getBitmap(int drawableRes) {
         Drawable drawable = getResources().getDrawable(drawableRes);
@@ -697,12 +707,14 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Permis
     public void onMapReady(MapboxMap mapboxMap) {
         this.mapmyIndiaMap = mapboxMap;
 
-        mapmyIndiaMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(),location.getLongitude()),9));
 
         mapmyIndiaMap.setPadding(20, 20, 20, 20);
-
         if (PermissionsManager.areLocationPermissionsGranted(getContext())) {
 //            enableLocation();
+            mapmyIndiaMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(),location.getLongitude()),9));
+
+            collectData();
+
         } else {
             permissionsManager = new PermissionsManager(this);
             permissionsManager.requestLocationPermissions(getActivity());
@@ -741,6 +753,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Permis
                 addCircle(circle_center,circle_radius);
                 return false;
             }
+
         });
 
 //        Pick Custom location
@@ -748,9 +761,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Permis
 
 
         mapmyIndiaMap.addOnMapClickListener(new MapboxMap.OnMapClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onMapClick(@NonNull LatLng latLng) {
-                mapmyIndiaMap.clear();
                     reverseGeocode(latLng.getLatitude(), latLng.getLongitude());
                     addcustMarker(latLng.getLatitude(), latLng.getLongitude());
 
@@ -759,7 +772,86 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, Permis
         });
 
     }
-//    pick Custom loc
+    public void showMarkerNormal(ArrayList<LocationModel> list){
+        IconFactory iconFactory = IconFactory.getInstance(getContext());
+        Icon icon;
+        mapmyIndiaMap.clear();
+        Log.i("LOCATION", "addMarkersForTowers: "+list.size());
+        for(int i=0; i<list.size();i++){
+
+            LatLng latLng = new LatLng(list.get(i).lat, list.get(i).lng);
+            if(list.get(i).name.equalsIgnoreCase("LPBTS"))   {
+                icon = iconFactory.fromBitmap(getBitmap(R.drawable.ic_marker_blue));
+            }
+            else if(list.get(i).name.equalsIgnoreCase("RTP"))   {
+                icon = iconFactory.fromBitmap(getBitmap(R.drawable.ic_marker_darkblue));
+            }
+            else if(list.get(i).name.equalsIgnoreCase("RTT"))   {
+                icon = iconFactory.fromBitmap(getBitmap(R.drawable.ic_marker_green));
+            }
+            else if(list.get(i).name.equalsIgnoreCase("GBM"))   {
+                icon = iconFactory.fromBitmap(getBitmap(R.drawable.ic_marker_orange));
+            }
+            else if(list.get(i).name.equalsIgnoreCase("GBT"))   {
+                icon = iconFactory.fromBitmap(getBitmap(R.drawable.ic_marker_pink));
+            }
+            else if(list.get(i).name.equalsIgnoreCase("COW(GBT)"))   {
+                icon = iconFactory.fromBitmap(getBitmap(R.drawable.ic_marker_purple));
+            }
+            else if(list.get(i).name.equalsIgnoreCase("Wall Mount"))   {
+                icon = iconFactory.fromBitmap(getBitmap(R.drawable.ic_marker_red));
+            }
+            else    {
+                icon = iconFactory.fromBitmap(getBitmap(R.drawable.ic_marker_person));
+            }
+            Marker marker = mapmyIndiaMap.addMarker(new MarkerOptions().position(latLng)
+                    .title(list.get(i).name).snippet("distance= "+list.get(i).distance));
+
+        }
+    }
+
+    private void collectData() {
+        Toast.makeText(getContext(), "Inside collect dsata", Toast.LENGTH_SHORT).show();
+        InputStream inputStream = getClass().getResourceAsStream("/assets/govtdata.csv");
+        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+        ArrayList<LocationModel> locationModels = new ArrayList<>();
+        int p = 0, q=0, r=0;
+        try {
+            String csvLine;
+            int i = 0;
+            while ((csvLine = reader.readLine()) != null) {
+                if (i > 0) {
+                    String[] row = csvLine.split(",");
+                    double lat = Double.parseDouble(row[3]);
+                    double lng = Double.parseDouble(row[4]);
+                    Location locationA = new Location("point A");
+                    locationA.setLatitude(lat);
+                    locationA.setLongitude(lng);
+                    Location locationB = new Location("Ambala");
+                    locationB.setLongitude(location.getLongitude());
+                    locationB.setLatitude(location.getLatitude());
+                    double distance = locationA.distanceTo(locationB);
+                    Log.i("VALUE OF DISTANCE", "getTowers: "+row[1]);
+//                    locationModels.add(new LocationModel().setTower(new LatLng(lat, lng), distance, row[5]));
+                    if(i<500 || i>3000&&i<4000){
+                        locationModels.add(new LocationModel().setTower(new LatLng(lat, lng), distance, row[5]));
+                    }
+                    else if(i>5000 && i<8000 || i>16000 && i<17000){
+                        locationModels.add(new LocationModel().setTower(new LatLng(lat, lng), distance, row[5]));
+                    }
+                }
+                i++;
+
+            }
+            Log.i("Length of locations", "collectData: "+locationModels.size());
+            showMarkerNormal(locationModels);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    //    pick Custom loc
 protected CameraPosition setCameraAndTilt() {
     CameraPosition cameraPosition = new CameraPosition.Builder().target(new LatLng(
             28.551087, 77.257373)).zoom(14).tilt(0).build();
@@ -795,9 +887,13 @@ protected CameraPosition setCameraAndTilt() {
 
     }
 //    pick custom loc
+@RequiresApi(api = Build.VERSION_CODES.N)
 private void addcustMarker(double latitude, double longitude) {
         location.setLatitude(latitude);
         location.setLongitude(longitude);
+    mapmyIndiaMap.addMarker(new MarkerOptions().position(new LatLng(
+            latitude, longitude)));
+    getTowers("kjfk");
         IconFactory iconFactory = IconFactory.getInstance(getContext());
         Icon icon = iconFactory.fromBitmap(getBitmap(R.drawable.ic_marker_person));
         mapmyIndiaMap.addMarker(new MarkerOptions().position(new LatLng(
@@ -835,7 +931,9 @@ private void addcustMarker(double latitude, double longitude) {
 
     void setCurrentLocationCamera(){
         if(location!=null){
-            mapmyIndiaMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()),5));
+            mapmyIndiaMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()),7));
+            collectData();
+
         }
     }
 
